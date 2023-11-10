@@ -70,8 +70,15 @@ int main(int argc, char *argv[]) {
     // such as the IP address and port, in a struct sockaddr_in named server_addr.
 
     struct sockaddr_in server_addr;
+    *bzero((char )&server_addr, sizeof(server_addr)):
+
+    // This function sets the memory of the server_addr structure to zero.
+    //  It is used to initialize the server_addr structure before setting its values.
     bzero((char *)&server_addr, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
+
+    // This function copies server->h_addr (the host address obtained from gethostbyname)
+    //  to server_addr.sin_addr.s_addr.
     bcopy((char *)server->h_addr, (char *)&server_addr.sin_addr.s_addr, server->h_length);
     server_addr.sin_port = htons(port);
 
@@ -90,6 +97,7 @@ int main(int argc, char *argv[]) {
     char request[200];
     snprintf(request, sizeof(request), "GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n", path, host);
 
+    // this function writes the HTTP GET request to the connected socket (sockfd). 
     if (write(sockfd, request, strlen(request)) < 0) {
         error("Error: Unable to write to socket");
     }
@@ -97,6 +105,8 @@ int main(int argc, char *argv[]) {
     // Read and print the response
     char buffer[1024];
     int n;
+
+    // This function reads data from the socket into the buffer. It reads up to sizeof(buffer) - 1 byte at a time.
     while ((n = read(sockfd, buffer, sizeof(buffer) - 1)) > 0) {
         buffer[n] = '\0';
         printf("%s", buffer);
